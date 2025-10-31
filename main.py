@@ -6,7 +6,7 @@ REGISTERED_USERS = {
     "liz": "pass123"
 }
 
-# 📄 Texty pro analýzu
+# 1. Texty pro analýzu
 TEXTS = [
     '''Situated about 10 miles west of Kemmerer,
     Fossil Butte is a ruggedly impressive
@@ -45,7 +45,7 @@ def get_user_input():
     username = input("Zadejte uživatelské jméno: ")
     password = input("Zadejte heslo: ")
 
-    # ⚠️ Kontrola registrace: Pokud není platná dvojice, vrací None
+    # Kontrola registrace: Pokud není platná dvojice, vrací None
     if username not in REGISTERED_USERS or REGISTERED_USERS[username] != password:
         print("Neplatné uživatelské jméno nebo heslo. Program bude ukončen.")
         return None
