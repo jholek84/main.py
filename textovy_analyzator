@@ -6,7 +6,7 @@ REGISTERED_USERS = {
     "liz": "pass123"
 }
 
-# Texty pro analýzu
+# 📄 Texty pro analýzu
 TEXTS = [
     '''Situated about 10 miles west of Kemmerer,
     Fossil Butte is a ruggedly impressive
@@ -35,23 +35,24 @@ TEXTS = [
     garpike and stingray are also present.'''
 ]
 
+# 2. FUNKCE PRO VSTUP A OVĚŘENÍ
+
 def get_user_input():
-    """Zpracuje přihlášení a výběr textu."""
-    
-    # 1. Přihlášení uživatele
+    """Zpracuje přihlášení a výběr textu. Vrátí vybraný text nebo None při selhání."""
+
+    # --- Přihlášení uživatele ---
     print("Vítejte v programu pro analýzu textu.")
     username = input("Zadejte uživatelské jméno: ")
     password = input("Zadejte heslo: ")
-    
-    # Kontrola správné dvojice (jméno ~ heslo)
+
+    # ⚠️ Kontrola registrace: Pokud není platná dvojice, vrací None
     if username not in REGISTERED_USERS or REGISTERED_USERS[username] != password:
         print("Neplatné uživatelské jméno nebo heslo. Program bude ukončen.")
-        # Ukončíme program
-        exit() 
-    
+        return None
+
     print(f"\nVítej, {username}! Můžeš analyzovat texty.")
-    
-    # 2. Výběr textu
+
+    # --- Výběr textu ---
     print("-" * 30)
     print("Máme k dispozici následující texty:")
     for i, text in enumerate(TEXTS):
@@ -59,31 +60,32 @@ def get_user_input():
 
     try:
         selection_input = input(f"Vyber text (zadej číslo 1 - {len(TEXTS)}): ")
-        
-        # Kontrola, zda je vstup číslo
+
         selection_number = int(selection_input)
-        
+
         # Kontrola, zda je číslo v platném rozsahu
         if 1 <= selection_number <= len(TEXTS):
             return TEXTS[selection_number - 1]
         else:
             print(f"Neplatné číslo textu (mimo rozsah 1 - {len(TEXTS)}). Program bude ukončen.")
-            exit()
-            
+            return None
+
     except ValueError:
         # Zachytí případ, kdy vstup není číslo
         print("Neplatný vstup. Je vyžadováno číslo. Program bude ukončen.")
-        exit()
+        return None
+
+# 3. FUNKCE PRO ANALÝZU A VÝSTUP
 
 def analyze_text(text):
     """Provede veškerou textovou analýzu a zobrazí výsledky."""
-    
+
     # Normalizace: nahradíme interpunkci mezerami
     normalized_text = re.sub(r'[.,:;!?"\'()]', ' ', text)
-    
+
     # Rozdělení na "slova" (tokeny oddělené mezerami), zbavíme se prázdných řetězců
     words = [w for w in normalized_text.split() if w]
-    
+
     # Inicializace počítadel
     count_all_words = len(words)
     count_title_case = 0
@@ -95,54 +97,54 @@ def analyze_text(text):
 
     # Hlavní cyklus pro analýzu
     for word in words:
-        
-        # Čísla
+
         if word.isdigit():
+            # Čísla
             count_numbers += 1
             sum_numbers += int(word)
         else:
             # Slova
-            
-            # Slova psaná VELKÝMI písmeny
             if word.isupper():
                 count_upper_case += 1
-            
-            # Slova psaná malými písmeny
             elif word.islower():
                 count_lower_case += 1
-                
-            # Slova začínající velkým písmenem (ale nejsou CELÉ velké)
             elif word[0].isupper() and not word.isupper():
                 count_title_case += 1
-            
-            # Četnost délek slov (počítáme délku u nečíselných tokenů)
+
+            # Četnost délek slov
             word_length_frequency[len(word)] += 1
-            
+
     # --- Zobrazení výsledků ---
     print("-" * 30)
     print("VÝSLEDKY ANALÝZY:")
     print("-" * 30)
-    print(f"Počet slov celkem (jako slovo se počítá řetězec znaků oddělený mezerami): {count_all_words}")
+    print(f"Počet slov celkem (řetězec znaků oddělený mezerami): {count_all_words}")
     print(f"Počet slov začínajících velkým písmenem: {count_title_case}")
     print(f"Počet slov psaných VELKÝMI písmeny: {count_upper_case}")
     print(f"Počet slov psaných malými písmeny: {count_lower_case}")
     print(f"Počet čísel (tokenů): {count_numbers}")
     print(f"Součet všech čísel: {sum_numbers}")
     print("-" * 30)
-    
+
     # Zobrazení sloupcového grafu
     print("GRAF ČETNOSTI DÉLEK SLOV:")
-    # Seřadíme podle délky slova (klíče slovníku)
     for length in sorted(word_length_frequency.keys()):
         count = word_length_frequency[length]
-        # Vykreslíme řádek: Délka: ####
         print(f"{length:2}: {'#' * count} ({count}x)")
     print("-" * 30)
 
-# Hlavní spuštění programu
+# 4. HLAVNÍ SPOUŠTĚCÍ BLOK
+
 def main():
+    """Hlavní funkce programu."""
     selected_text = get_user_input()
-    if selected_text:
-        analyze_text(selected_text)
+
+    # Logika pro ukončení: Pokud selected_text je None, ukončíme program.
+    if selected_text is None:
+        return # Zajišťuje spolehlivé ukončení
+
+    # Pokračuje analýza, pouze pokud byl text úspěšně vybrán.
+    analyze_text(selected_text)
+
 if __name__ == "__main__":
     main()
