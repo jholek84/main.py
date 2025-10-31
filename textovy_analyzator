@@ -1,8 +1,9 @@
 # Definice platných uživatelských jmen a hesel
 REGISTERED_USERS = {
     "bob": "123",
-    "alice": "456",
-    "clara": "789"
+    "ann": "pass123",
+    "mike": "password123",
+    "liz": "pass123"
 }
 
 # Texty pro analýzu
